@@ -1,0 +1,110 @@
+@use "./abstract" as *;
+
+// Reset styles
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+// global style
+html,
+body,
+#app {
+  height: 100%;
+  overflow: hidden;
+  position: fixed; // avoid hiding the address bar when scrolling on mobile browsers
+  width: 100vw;
+}
+
+html {
+  font-size: 62.5%; // 1rem = 10px
+}
+
+body {
+  color: var(--grey-70);
+  text-align: center;
+}
+
+#app {
+  display: grid;
+  grid-template: auto / 1fr;
+  background: var(--main-background);
+
+  // Fade out the aside background on the top of the screen
+  &::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    background: var(--main-background-transparent);
+  }
+
+  main {
+    z-index: map-get($z-index, main);
+  }
+
+  @include laptop-up {
+    grid-template: auto / repeat(3, minmax(0, 1fr));
+  }
+}
+
+button {
+  border: none;
+  border-radius: 50%;
+  font-family: inherit;
+  cursor: pointer;
+  color: inherit;
+  position: relative;
+
+  // overlay for hover and active states with any background
+  &:hover::before,
+  &:active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    opacity: 0;
+    background: var(--grey-70);
+    border-radius: 50%;
+    transition: opacity 100ms;
+  }
+
+  &:hover::before {
+    opacity: 0.02;
+  }
+
+  &:active::before {
+    opacity: 0.04;
+  }
+}
+
+button,
+[tabindex="0"] {
+  outline: none;
+
+  // focus outline alternative that allows to use box-shadows
+  &:focus,
+  &:focus-visible {
+    &::after {
+      $outline-width: 3px;
+      content: "";
+      position: absolute;
+      top: -$outline-width;
+      bottom: -$outline-width;
+      left: -$outline-width;
+      right: -$outline-width;
+      border: $outline-width solid var(--primary-40);
+      border-radius: inherit;
+    }
+  }
+
+  // no focus ring on browsers that support :focus-visible
+  &:focus:not(:focus-visible)::after {
+    border: none;
+  }
+}

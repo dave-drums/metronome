@@ -1,0 +1,27 @@
+@use "./abstract" as *;
+
+body {
+  font-family: "Inter", sans-serif;
+}
+
+h1,
+h2 {
+  color: var(--grey-60);
+  font-weight: 500;
+  font-size: 1.8rem;
+  letter-spacing: 0.445em;
+  text-transform: uppercase;
+}
+
+@include laptop-up {
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+h3 {
+  color: var(--grey-70);
+  font-weight: 600;
+  font-size: 2rem;
+  line-height: 2.4rem;
+}

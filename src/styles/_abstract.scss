@@ -1,0 +1,66 @@
+// The content of this file must not generate any CSS
+// so it can be imported in all Sass stylesheets
+
+// Variables
+
+$z-index: (
+  main: 1,
+  aside-background: -1,
+  settings-button: 1,
+  mobile-backdrop: 1,
+  mobile-settings: 2
+);
+
+@function z-index($key) {
+  @if (map-has-key($z-index, $key)) {
+    @return map-get($z-index, $key);
+  } @else {
+    @error "No z-index registered for key '#{$key}'";
+  }
+}
+
+// Mixins
+
+@mixin shadow-01 {
+  box-shadow: var(--shadow-01);
+}
+
+@mixin shadow-02 {
+  box-shadow: var(--shadow-02);
+}
+
+@mixin phone-only {
+  @media (max-width: 599px) {
+    @content;
+  }
+}
+@mixin tablet-portrait-up {
+  @media (min-width: 600px) {
+    @content;
+  }
+}
+@mixin tablet-landscape-up {
+  @media (min-width: 900px) {
+    @content;
+  }
+}
+@mixin laptop-up {
+  @media (min-width: 1200px) {
+    @content;
+  }
+}
+@mixin big-laptop-up {
+  @media (min-width: 1400px) {
+    @content;
+  }
+}
+@mixin desktop-up {
+  @media (min-width: 1800px) {
+    @content;
+  }
+}
+@mixin big-desktop-up {
+  @media (min-width: 2200px) {
+    @content;
+  }
+}
