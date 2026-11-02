@@ -1,0 +1,2 @@
+# Preserve the pinned Vault reference bytes on Windows and Linux checkouts.
+tests/fixtures/vault/* text eol=lf

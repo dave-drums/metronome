@@ -1,0 +1,71 @@
+
+    /* Range slider styling */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #06b3fd;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #06b3fd;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 640px) {
+      .metronome-wrapper {
+        padding: 20px 16px !important;
+      }
+      .metronome-card {
+        padding: 24px !important;
+      }
+      .bpm-display {
+        padding: 24px !important;
+        margin-bottom: 20px !important;
+      }
+      .bpm-number {
+        font-size: 4rem !important;
+      }
+      .beat-circle {
+        width: 40px !important;
+        height: 40px !important;
+      }
+      .subdivision-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 4px !important;
+      }
+      .subdivision-btn {
+        padding: 8px 4px !important;
+        min-height: 50px !important;
+      }
+      .subdivision-btn svg {
+        transform: scale(0.65);
+      }
+      .subdivision-btn span {
+        font-size: 0.5rem !important;
+      }
+      .beats-per-bar-grid {
+        gap: 4px !important;
+      }
+      .beats-per-bar-btn {
+        padding: 6px 2px !important;
+        font-size: 0.75rem !important;
+      }
+      .bpm-controls {
+        gap: 12px !important;
+      }
+      .tap-btn {
+        min-width: 75px !important;
+        padding: 0 12px !important;
+      }
+    }
+  

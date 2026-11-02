@@ -1,0 +1,44 @@
+[
+  {
+    "family": "Inter",
+    "weight": "400",
+    "style": "normal",
+    "file": "font-0.ttf"
+  },
+  {
+    "family": "Inter",
+    "weight": "500",
+    "style": "normal",
+    "file": "font-1.ttf"
+  },
+  {
+    "family": "Inter",
+    "weight": "600",
+    "style": "normal",
+    "file": "font-2.ttf"
+  },
+  {
+    "family": "Inter",
+    "weight": "700",
+    "style": "normal",
+    "file": "font-3.ttf"
+  },
+  {
+    "family": "Inter",
+    "weight": "800",
+    "style": "normal",
+    "file": "font-4.ttf"
+  },
+  {
+    "family": "Oswald",
+    "weight": "400",
+    "style": "normal",
+    "file": "font-5.ttf"
+  },
+  {
+    "family": "Oswald",
+    "weight": "700",
+    "style": "normal",
+    "file": "font-6.ttf"
+  }
+]
