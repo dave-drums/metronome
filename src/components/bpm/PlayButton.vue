@@ -9,12 +9,19 @@
 import IconPlay from "./IconPlay.vue";
 import IconStop from "./IconStop.vue";
 import usePlayer from "../../composables/usePlayer";
-import { onBeforeUnmount, onMounted } from "vue";
+import { inject, onBeforeUnmount, onMounted } from "vue";
 
 const { isPlaying, play, stop } = usePlayer();
+const keyboardRoot = inject<HTMLElement | Document>("keyboardRoot", document);
 
 function onKeyPress(e: KeyboardEvent) {
-  const nothingInFocus = !document.activeElement || document.activeElement === document.body;
+  const nothingInFocus =
+    keyboardRoot === document
+      ? !document.activeElement || document.activeElement === document.body
+      : !(e.target instanceof HTMLElement) ||
+        !e.target.closest(
+          "button, input, select, textarea, a, [contenteditable]"
+        );
 
   if (e.code === "Space" && nothingInFocus) {
     togglePlay();
@@ -26,11 +33,12 @@ function togglePlay() {
 }
 
 onMounted(() => {
-  document.addEventListener("keypress", onKeyPress);
+  keyboardRoot.addEventListener("keypress", onKeyPress as EventListener);
 });
 
 onBeforeUnmount(() => {
-  document.removeEventListener("keypress", onKeyPress);
+  keyboardRoot.removeEventListener("keypress", onKeyPress as EventListener);
+  stop();
 });
 </script>
 

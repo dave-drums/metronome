@@ -47,17 +47,18 @@ import { computed, inject, onMounted } from "vue";
 
 const { state, commit } = useStore();
 const context = inject("context", "desktop"); // make separate radio groups for the desktop and mobile settings
+const themeRoot = inject<HTMLElement>("themeRoot", document.documentElement);
 
 const currentTheme = computed(() => state.settings.theme);
 
 onMounted(() => {
-  document.documentElement.setAttribute("color-scheme", state.settings.theme);
+  themeRoot.setAttribute("color-scheme", state.settings.theme);
 });
 
 function updateTheme(e: Event) {
   const theme = (e.target as HTMLInputElement).value;
   commit("setTheme", theme);
-  document.documentElement.setAttribute("color-scheme", theme);
+  themeRoot.setAttribute("color-scheme", theme);
 }
 </script>
 

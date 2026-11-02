@@ -2,6 +2,6 @@
 
 interface Navigator {
   wakeLock: {
-    request: (type: string) => Promise<void>;
+    request: (type: string) => Promise<{ release(): Promise<void> }>;
   };
 }

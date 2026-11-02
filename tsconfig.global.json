@@ -4,7 +4,7 @@
   "exclude": [],
   "compilerOptions": {
     "composite": true,
-    "lib": [],
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
     "types": ["node", "jsdom", "vitest", "vitest/globals", "vite-plugin-pwa/client"]
   }
 }

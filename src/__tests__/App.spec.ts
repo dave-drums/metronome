@@ -78,7 +78,7 @@ describe("App.vue", () => {
     expect(mobileThemeRadios.length).toBe(3);
   });
 
-  it("should register a service worker for PWA", () => {
+  it("should not register a service worker from the reusable app", () => {
     mockUseRegisterSW.mockClear();
 
     render(App, {
@@ -87,6 +87,6 @@ describe("App.vue", () => {
       }
     });
 
-    expect(mockUseRegisterSW).toHaveBeenCalledTimes(1);
+    expect(mockUseRegisterSW).not.toHaveBeenCalled();
   });
 });

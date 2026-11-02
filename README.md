@@ -27,6 +27,9 @@ Feel free to open an issue if you have any suggestion or if you find a bug.
 
 ## Local development
 
+For the independently hosted Dave Drums embed, production URLs and integration
+instructions, see [EMBEDDING.md](./EMBEDDING.md).
+
 ### Installation
 
 Clone the repo, then :

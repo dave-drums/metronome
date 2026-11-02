@@ -14,7 +14,10 @@
     "url": "https://twitter.com/jsulpis"
   },
   "scripts": {
-    "build": "vue-tsc --noEmit && vite build",
+    "build": "vue-tsc --noEmit -p tsconfig.app.json --composite false && vite build",
+    "build:embed": "vue-tsc --noEmit -p tsconfig.app.json --composite false && vite build --config vite.embed.config.ts",
+    "build:pages": "npm run build && npm run build:embed && node scripts/package-pages.cjs",
+    "test:embed-build": "node scripts/verify-embed.cjs",
     "dev": "vite --open",
     "format:check": "prettier --check .",
     "format:write": "prettier --write .",
@@ -63,7 +66,7 @@
     "vite": "^2.9.1",
     "vite-plugin-pwa": "^0.11.13",
     "vitest": "^0.9.3",
-    "vue-tsc": "^0.34.5",
+    "vue-tsc": "1.8.27",
     "yorkie": "^2.0.0"
   },
   "gitHooks": {

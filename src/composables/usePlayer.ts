@@ -6,7 +6,7 @@ let audioContextUnlocked = false;
 
 const sounds = new Map<string, Howl>();
 ["click", "hi-hat", "kick", "sticks"].forEach((sound) => {
-  const howl = new Howl({ src: [`sounds/${sound}.mp3`] });
+  const howl = new Howl({ src: [`${import.meta.env.BASE_URL}sounds/${sound}.mp3`] });
   howl.once("unlock", () => (audioContextUnlocked = true));
   sounds.set(sound, howl);
 });
@@ -75,7 +75,7 @@ export default function usePlayer() {
     if (!audioContextUnlocked) {
       await unlockAudioContext();
     }
-    loop();
+    if (isPlaying.value) loop();
   }
 
   function stop() {

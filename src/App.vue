@@ -18,7 +18,12 @@
     <section>
       <TempoControls />
       <ProgressTrack :progress="(bpm - min) / (max - min || 1)">
-        <Wheel :value="bpm" :min="min" :max="max" @change="commit('setBpmValue', $event)" />
+        <Wheel
+          :value="bpm"
+          :min="min"
+          :max="max"
+          @change="commit('setBpmValue', $event)"
+        />
         <PlayButton class="play-button" />
       </ProgressTrack>
     </section>
@@ -36,14 +41,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from "vue";
+import { computed, onMounted, onBeforeUnmount } from "vue";
 import PlayButton from "./components/bpm/PlayButton.vue";
 import TempoControls from "./components/bpm/TempoControls.vue";
 import ProgressTrack from "./components/bpm/ProgressTrack.vue";
 import Wheel from "./components/bpm/Wheel.vue";
 import { useStore } from "vuex";
 import BeatIndicator from "./components/beat/BeatIndicator.vue";
-import { useRegisterSW } from "virtual:pwa-register/vue";
 import Aside from "./components/Aside.vue";
 import Volume from "./components/settings/Volume.vue";
 import Sound from "./components/settings/Sound.vue";
@@ -55,24 +59,32 @@ import Footer from "./components/Footer.vue";
 import Rythm from "./components/beat/Rythm.vue";
 import ContextProvider from "./components/ContextProvider.vue";
 
-useRegisterSW();
-
 const { state, commit } = useStore();
 const bpm = computed(() => state.bpm.value);
 const min = computed(() => state.bpm.min);
 const max = computed(() => state.bpm.max);
 
-onMounted(() => {
-  if (navigator.wakeLock) {
-    // prevents from locking the screen (browser support is limited)
-    navigator.wakeLock.request("screen");
-    document.addEventListener("visibilitychange", () => {
-      // the wake lock is released when leaving the app, we request it again when coming back
-      if (document.visibilityState === "visible") {
-        navigator.wakeLock.request("screen");
-      }
-    });
+let disposed = false;
+let wakeLock: { release(): Promise<void> } | undefined;
+async function requestWakeLock() {
+  if (disposed || !navigator.wakeLock || document.visibilityState !== "visible")
+    return;
+  try {
+    const lock = await navigator.wakeLock.request("screen");
+    if (disposed) await lock?.release();
+    else wakeLock = lock;
+  } catch {
+    /* Unsupported or denied by the browser; playback still works. */
   }
+}
+onMounted(() => {
+  requestWakeLock();
+  document.addEventListener("visibilitychange", requestWakeLock);
+});
+onBeforeUnmount(() => {
+  disposed = true;
+  document.removeEventListener("visibilitychange", requestWakeLock);
+  wakeLock?.release().catch(() => {});
 });
 </script>
 

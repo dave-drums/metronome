@@ -5,6 +5,7 @@ import { resolve } from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: "/metronome/",
   plugins: [
     Vue(),
     VitePWA({
@@ -16,18 +17,18 @@ export default defineConfig({
         theme_color: "#ffffff",
         icons: [
           {
-            src: "/android-chrome-192x192.png",
+            src: "android-chrome-192x192.png",
             type: "image/png",
             sizes: "192x192"
           },
           {
-            src: "/android-chrome-512x512.png",
+            src: "android-chrome-512x512.png",
             type: "image/png",
             sizes: "512x512"
           }
         ]
       },
-      includeAssets: ["thumbnail.jpg"]
+      includeAssets: ["thumbnail.jpg", "sounds/*.mp3"]
     })
   ],
   resolve: {
