@@ -1,8 +1,10 @@
 name: Build and deploy metronome
 # Pages > Build and deployment > Source must be GitHub Actions.
-# main contains Vue source; publish the combined dist artifact, never the checkout root.
+# Publish the verified React standalone + embed artifact, never the source checkout.
 on:
   push:
+    branches: [main, migration/practice-vault-react]
+  pull_request:
     branches: [main]
   workflow_dispatch:
 permissions:
@@ -22,13 +24,20 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build:pages
-      - run: npm run test:embed-build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:browser
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-verification
+          path: test-results
       - uses: actions/upload-pages-artifact@v4
         with:
           path: dist
 
   deploy:
     needs: build
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     permissions:
       pages: write

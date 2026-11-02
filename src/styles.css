@@ -1,0 +1,209 @@
+/* MIT — Dave Drums. Metronome styles extracted from Practice Vault. */
+:host { all: initial; display: block; }
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+.metronome-surface { font: 16px/1.6 'DaveDrumsMetronomeInter', 'Inter', sans-serif; color: #1a1a1a; background: #f8f9fa; }
+.hero { --heading-hero-desktop: 42px; --heading-hero-mobile: 36px; }
+.hero {
+  position: relative;
+  background: #1a1a2e;
+  padding: 100px 20px 80px;
+  margin-bottom: 48px;
+  overflow: hidden;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #06b3fd, #38bdf8, #06b3fd);
+  background-size: 200% auto;
+  animation: gradient-shift 3s linear infinite;
+  z-index: 3;
+}
+
+.hero-banner {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  opacity: 0.15;
+  z-index: 0;
+}
+
+.hero-banner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at top, rgba(6,179,253,0.1) 0%, transparent 50%);
+}
+
+/* Background variants */
+
+.hero-content {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  text-align: center;
+  z-index: 1;
+}
+
+.hero-title {
+  font-family: 'DaveDrumsMetronomeOswald', 'Oswald', sans-serif;
+  font-size: var(--heading-hero-desktop);
+  font-weight: 400;
+  background: linear-gradient(135deg, #fff 0%, #e0f2fe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin: 0;
+  letter-spacing: -1px;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.hero-badge {
+  display: inline-block;
+  padding: 8px 18px;
+  background: rgba(6,179,253,0.1);
+  border: 1px solid rgba(6,179,253,0.3);
+  border-radius: 12px;
+  color: #38bdf8;
+  font-size: var(--heading-badge);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  margin-top: 30px;
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: 60px 20px 40px;
+  }
+  
+  .hero-title {
+    font-size: var(--heading-hero-mobile);
+  }
+}
+
+
+
+    /* Range slider styling */
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #06b3fd;
+      cursor: pointer;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #06b3fd;
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    /* Mobile optimizations */
+    @media (max-width: 640px) {
+      .metronome-wrapper {
+        padding: 20px 16px !important;
+      }
+      .metronome-card {
+        padding: 24px !important;
+      }
+      .bpm-display {
+        padding: 24px !important;
+        margin-bottom: 20px !important;
+      }
+      .bpm-number {
+        font-size: 64px !important;
+      }
+      .beat-circle {
+        width: 40px !important;
+        height: 40px !important;
+      }
+      .subdivision-grid {
+        grid-template-columns: repeat(4, 1fr) !important;
+        gap: 4px !important;
+      }
+      .subdivision-btn {
+        padding: 8px 4px !important;
+        min-height: 50px !important;
+      }
+      .subdivision-btn svg {
+        transform: scale(0.65);
+      }
+      .subdivision-btn span {
+        font-size: 8px !important;
+      }
+      .beats-per-bar-grid {
+        gap: 4px !important;
+      }
+      .beats-per-bar-btn {
+        padding: 6px 2px !important;
+        font-size: 12px !important;
+      }
+      .bpm-controls {
+        gap: 12px !important;
+      }
+      .tap-btn {
+        min-width: 75px !important;
+        padding: 0 12px !important;
+      }
+    }
+  
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #fff;
+        cursor: pointer;
+        border: none;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      }
+      .beat-circle {
+        width: clamp(32px, calc((100vw - 140px) / 8), 48px) !important;
+        height: clamp(32px, calc((100vw - 140px) / 8), 48px) !important;
+      }
+      .subdivision-dot {
+        width: clamp(3.3px, calc((100vw - 140px) / 96), 5px) !important;
+        height: clamp(3.3px, calc((100vw - 140px) / 96), 5px) !important;
+      }
+      @media (max-width: 560px) {
+        .subdivision-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+        .beats-popup-grid {
+          grid-template-columns: repeat(4, 1fr) !important;
+        }
+        .subdivisions-popup-grid {
+          grid-template-columns: repeat(2, 1fr) !important;
+        }
+      }
+      @keyframes fadeIn {
+        0% { opacity: 0.3; transform: scale(0.98); }
+        100% { opacity: 1; transform: scale(1); }
+      }
+      button:active {
+        transform: translateY(2px) !important;
+      }
+    
