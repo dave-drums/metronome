@@ -35,7 +35,7 @@ export async function mountApplication(target, { standalone = false, cssHref } =
     root = createRoot(surface);
     flushSync(() => root.render(React.createElement(React.Fragment, null,
       standalone && React.createElement(Header, { assetBase }),
-      React.createElement(Metronome, { assetBase, keyboardTarget: standalone ? window : surface })
+      React.createElement(Metronome, { assetBase, keyboardTarget: standalone ? window : surface, embedded: !standalone })
     )));
   } catch (error) {
     root?.unmount(); parent.replaceChildren(); active.delete(host); throw error;
