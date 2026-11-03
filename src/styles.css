@@ -2,6 +2,7 @@
 :host { all: initial; display: block; }
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 .metronome-surface { font: 16px/1.6 'DaveDrumsMetronomeInter', 'Inter', sans-serif; color: #1a1a1a; background: #f8f9fa; }
+:host .metronome-surface { background: transparent; }
 .hero { --heading-hero-desktop: 42px; --heading-hero-mobile: 36px; }
 .hero {
   position: relative;
