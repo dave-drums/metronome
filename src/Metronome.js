@@ -2,7 +2,7 @@
 // Migrated from dave-drums/vault @ 44b400a690b498a90f822b1678fb3f196b5802c0.
 import React, { useState, useEffect, useRef } from 'react';
 
-export default function Metronome({ keyboardTarget = window, assetBase = new URL(import.meta.env.BASE_URL, window.location.origin).href } = {}) {
+export default function Metronome({ keyboardTarget = window, assetBase = new URL(import.meta.env.BASE_URL, window.location.origin).href, embedded = false } = {}) {
   const [bpm, setBpm] = useState(120);
   const [isPlaying, setIsPlaying] = useState(false);
   const [beat, setBeat] = useState(0);
@@ -315,7 +315,7 @@ export default function Metronome({ keyboardTarget = window, assetBase = new URL
 
   const trainerActive = trainerMode !== 'off';
 
-  return React.createElement('div', { className: "metronome-wrapper", style: { minHeight: '60vh', background: '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', fontFamily: "'DaveDrumsMetronomeInter', 'Inter', sans-serif" }},
+  return React.createElement('div', { className: "metronome-wrapper", style: { minHeight: '60vh', background: embedded ? 'transparent' : '#f8f9fa', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px', fontFamily: "'DaveDrumsMetronomeInter', 'Inter', sans-serif" }},
 
     React.createElement('div', { style: { width: '100%', maxWidth: '600px' }},
       React.createElement('div', { className: "metronome-card", style: { background: '#fff', borderRadius: '15px', padding: '30px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', border: '2px solid #e9ecef' }},
