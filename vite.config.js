@@ -16,8 +16,8 @@ export default defineConfig({
       start_url: '/metronome/',
       scope: '/metronome/',
       display: 'standalone',
-      theme_color: '#06b3fd',
-      background_color: '#f8f9fa',
+      theme_color: '#111517',
+      background_color: '#111517',
       icons: [{src: 'assets/metronome.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any'}]
     },
     workbox: { navigateFallbackDenylist: [/^\/metronome\/embed\//] }

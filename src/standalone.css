@@ -1,2 +1,2 @@
 html { font-size: 16px; }
-body { margin: 0; background: #f8f9fa; }
+body { margin: 0; padding-inline: clamp(16px,4vw,48px); background: #111517; }

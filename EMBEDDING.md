@@ -21,18 +21,21 @@ React is bundled; no global React object, Babel script, eval, account SDK or ifr
 is needed. All three original MP3s, fonts and other assets load independently from
 `https://dave-drums.github.io/metronome/`, never from the main website or Vault.
 
-The main site's typography, buttons and navigation are isolated from the metronome.
-The card preserves its original Inter typography and responsive rules. Standalone
-hero typography retains Oswald; the embedded panel excludes Vault's surrounding
-navigation, account UI and hero header. Dialogs retain viewport overlays.
+The application is styled inside Shadow DOM so its selectors cannot affect the
+host page. Its design matches Dave Drums: Inter for headings and tempo, DM Sans
+for controls, layered graphite panels, recessed fields and shaded cyan actions. Standalone
+and embedded versions use the same interface; the embed excludes the hero.
 
-FontFace registers uniquely named self-hosted font families so existing host fonts
-are not replaced. Embedded shortcuts work only inside the focused metronome; input
+FontFace loads the same self-hosted variable Inter and DM Sans WOFF2 files used by
+the website. The generated `src/dave-drums-theme.css` contains the website's
+canonical tokens and tool components. Synchronize from the sibling main checkout
+with `python scripts/sync-tool-theme.py`; `--check` detects changed styles or fonts.
+Embedded shortcuts work only inside the focused metronome; input
 editing retains its own keys. Unmounting stops audio and releases timers/listeners.
 
 The embed registers no service worker, does not touch browser preferences, and
 does not provide offline caching for the host website. Offline support is provided
 by the independently installed standalone PWA only, under `/metronome/` on GitHub Pages.
 
-The integration shown here is documentation only: the main Dave Drums repository
-has not been edited. See [README.md](README.md) for gated deployment instructions.
+Publish the updated main, Metronome and Groove Lab checkouts together to expose
+the cohesive interface on the website. See [README.md](README.md) for deployment.

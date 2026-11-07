@@ -1,61 +1,39 @@
 import { test, expect } from '@playwright/test';
-import { PNG } from 'pngjs';
-import pixelmatch from 'pixelmatch';
-
 const origin='http://127.0.0.1:4191';
 async function ready(page,url) {
   await page.goto(new URL(url,origin).href); await page.locator('.metronome-card').waitFor();
   await page.evaluate(()=>document.fonts.ready);
 }
-async function compare(testInfo, reference, migrated, name) {
-  // Compare content at the same viewport origin. Different host headers otherwise
-  // produce fractional raster offsets even when every computed size is identical.
-  for (const locator of [reference,migrated]) await locator.evaluate(element=>{
-    const rect=element.getBoundingClientRect();
-    element.dataset.testOriginalStyle=element.getAttribute('style')||'';
-    Object.assign(element.style,{position:'fixed',top:'0',left:'0',width:`${rect.width}px`,transform:'none',margin:'0',zIndex:'2147483647'});
-    const backing=document.createElement('div');backing.dataset.visualBacking='true';
-    Object.assign(backing.style,{position:'fixed',inset:'0',background:'#f8f9fa',zIndex:'2147483646'});
-    element.parentElement.append(backing);
-  });
-  const options={animations:'disabled',caret:'hide'};
-  const a=await reference.screenshot(options),b=await migrated.screenshot(options);
-  await testInfo.attach(`${name}-vault`,{body:a,contentType:'image/png'});
-  await testInfo.attach(`${name}-react`,{body:b,contentType:'image/png'});
-  const source=PNG.sync.read(a),target=PNG.sync.read(b);
-  const measure=element=>{
-    const base=element.getBoundingClientRect();
-    return [element,...element.querySelectorAll('*')].map(e=>{
-      const r=e.getBoundingClientRect(),s=getComputedStyle(e);
-      return {tag:e.tagName,x:Math.round((r.x-base.x)*100)/100,y:Math.round((r.y-base.y)*100)/100,width:Math.round(r.width*100)/100,height:Math.round(r.height*100)/100,
-        font:s.fontFamily.replaceAll('DaveDrumsMetronomeInter, Inter','Inter').replaceAll('DaveDrumsMetronome',''),size:s.fontSize,weight:s.fontWeight,line:s.lineHeight,color:s.color,bg:s.background,padding:s.padding,margin:s.margin};
-    });
-  };
-  const measurements=[await reference.evaluate(measure),await migrated.evaluate(measure)];
-  const differences=measurements[0].flatMap((item,index)=>JSON.stringify(item)===JSON.stringify(measurements[1][index])?[]:[{index,source:item,target:measurements[1][index]}]);
-  await testInfo.attach(name+'-geometry',{body:JSON.stringify(differences,null,2),contentType:'application/json'});
-  expect(differences,`${name} layout and computed styles must match Vault`).toEqual([]);
-  expect(target.width).toBe(source.width);expect(target.height).toBe(source.height);
-  const diff=new PNG({width:source.width,height:source.height});
-  const changed=pixelmatch(source.data,target.data,diff.data,source.width,source.height,{threshold:0.1});
-  await testInfo.attach(name+'-diff',{body:PNG.sync.write(diff),contentType:'image/png'});
-  for(const locator of [reference,migrated])await locator.evaluate(element=>{element.parentElement.querySelector('[data-visual-backing]').remove();element.setAttribute('style',element.dataset.testOriginalStyle);delete element.dataset.testOriginalStyle});
-  expect(changed,`${name} must match the unmodified Vault component`).toBe(0);
+async function checkTheme(page) {
+  const card=page.locator('.metronome-card');
+  await expect(card).toHaveCSS('background-image',/linear-gradient/);
+  await expect(card).toHaveCSS('color','rgb(237, 242, 245)');
+  await expect(card).toHaveCSS('font-family', /DM Sans/);
+  await expect(page.getByLabel('Tempo in beats per minute')).toHaveCSS('font-family', /Inter/);
+  await expect(page.getByLabel('Start metronome')).toHaveCSS('background-image',/linear-gradient/);
+  await expect(page.getByLabel('Start metronome')).toHaveCSS('color','rgb(17, 21, 23)');
+  await expect(page.getByLabel('Start metronome')).toHaveCSS('border-radius','10px');
+  const bounds=await card.boundingBox();
+  expect(bounds.x).toBeGreaterThanOrEqual(0);
+  expect(bounds.x+bounds.width).toBeLessThanOrEqual(page.viewportSize().width+1);
 }
-for(const width of [1280,390,320]) test(`original Vault appearance at ${width}px`,async({browser},testInfo)=>{
+for(const width of [1280,600,390,320]) test(`shared Dave Drums interface at ${width}px`,async({browser},testInfo)=>{
   const context=await browser.newContext({viewport:{width,height:1000}});
-  const original=await context.newPage(), migrated=await context.newPage();
-  await ready(original,'/reference/'); await ready(migrated,'/metronome/');
-  await compare(testInfo,original.locator('.metronome-card'),migrated.locator('.metronome-card'),'card');
-  for(const [trigger,title]of [
-    ['.metronome-card > div:nth-child(3) > button:first-child','Tempo Trainer'],
-    ['text=Beats per Bar: 4','Beats per Bar'],['text=Subdivision: 1','Subdivision']
-  ]){
-    await original.locator(trigger).click();await migrated.locator(trigger).click();
-    const a=original.getByRole('heading',{name:title,exact:true}).locator('../..');
-    const b=migrated.getByRole('heading',{name:title,exact:true}).locator('../..');
-    await compare(testInfo,a,b,title);
-    await a.getByRole('button',{name:'×',exact:true}).click();await b.getByRole('button',{name:'×',exact:true}).click();
+  const page=await context.newPage();await ready(page,'/metronome/');await checkTheme(page);
+  await testInfo.attach('shared-tool-card',{body:await page.locator('.metronome-card').screenshot(),contentType:'image/png'});
+  await page.getByText('Beats: 4',{exact:true}).click();
+  await page.getByRole('button',{name:'16',exact:true}).click();
+  expect(await page.locator('.beat-circle').count()).toBe(16);
+  for(const beat of await page.locator('.beat-circle').all()) {
+    const box=await beat.boundingBox();expect(box.width).toBeGreaterThanOrEqual(24);
+    expect(box.x+box.width).toBeLessThanOrEqual(width);
+  }
+  for(const trigger of [page.getByText('Beats: 16',{exact:true}),page.getByText('Subdivision: 1',{exact:true})]) {
+    await trigger.click();
+    const popup=page.getByRole('dialog');await expect(popup).toBeVisible();
+    const box=await popup.boundingBox();expect(box.x).toBeGreaterThanOrEqual(0);expect(box.x+box.width).toBeLessThanOrEqual(width);
+    await expect(popup.getByLabel('Close')).toBeFocused();
+    await page.keyboard.press('Escape');await expect(popup).toHaveCount(0);await expect(trigger).toBeFocused();
   }
   await context.close();
 });
@@ -102,7 +80,7 @@ test('standalone reload resets state and all three original sounds play offline'
     const responses=[];const listener=r=>{if(r.url().endsWith('.mp3'))responses.push(r.fromServiceWorker())};page.on('response',listener);
     await page.reload();await page.locator('.metronome-card').waitFor();
     await expect(page.getByLabel('Tempo in beats per minute')).toHaveValue('120');
-    await expect(page.getByText('Beats per Bar: 4')).toBeVisible();
+    await expect(page.getByText('Beats: 4')).toBeVisible();
     await page.getByText('Subdivision: 1',{exact:true}).click();await page.getByText('Eighth',{exact:true}).click();
     await page.getByLabel('Start metronome').click();
     await expect.poll(()=>page.evaluate(()=>new Set(audioEvents.filter(e=>e.duration>0.005).map(e=>e.fingerprint)).size)).toBe(3);
@@ -125,8 +103,7 @@ test('embed loads independently, isolates CSS and shortcuts, resets and cleans u
     const mod=await import('https://dave-drums.github.io/metronome/embed/metronome.js');window.mountMetronome=mod.mountMetronome;
     window.metronome=await mountMetronome('#metronome-app');
   });
-  const original=await context.newPage();await ready(original,'/reference/');
-  await compare(testInfo,original.locator('.metronome-card'),page.locator('.metronome-card'),'embedded-card');await original.close();
+  await checkTheme(page);
   expect(await page.locator('#outside').evaluate(e=>getComputedStyle(e).backgroundColor)).toBe('rgb(255, 0, 0)');
   await page.locator('#outside').focus();await page.keyboard.press('ArrowUp');await expect(page.getByLabel('Tempo in beats per minute')).toHaveValue('120');
   await page.locator('.metronome-surface').focus();await page.keyboard.press('ArrowUp');await expect(page.getByLabel('Tempo in beats per minute')).toHaveValue('121');

@@ -26,9 +26,10 @@ clears dist before the embed is added. Both outputs include locally bundled Reac
 The verifier checks original audio hashes, offline assets, licence files and the
 absence of authentication, storage and service-worker code from the embed.
 
-Tests compare the migration with the unmodified, pinned Vault component, including
-screenshots of the card and all dialogs, real Web Audio scheduling, reset-on-reload,
-offline playback, keyboard handling, cleanup and CSS isolation. The reference page
+Tests compare playback with the unmodified, pinned Vault component, including
+real Web Audio scheduling, reset-on-reload, offline playback, keyboard handling,
+cleanup and CSS isolation. Appearance checks target the shared Dave Drums interface
+rather than the old Vault design. The reference page
 is built only for tests under `.tools/reference/`; it is never deployed.
 
 ## Deployment

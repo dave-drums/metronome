@@ -19,7 +19,7 @@ export async function mountApplication(target, { standalone = false, cssHref } =
   const parent = standalone ? host : (ownedShadows.get(host) || host.attachShadow({ mode: 'open' }));
   if (!standalone) ownedShadows.set(host, parent);
   const surface = document.createElement('div');
-  surface.className = 'metronome-surface';
+  surface.className = 'metronome-surface tool-ui';
   if (!standalone) { surface.tabIndex = 0; surface.setAttribute('aria-label', 'Metronome'); }
   let root;
   try {
