@@ -34,7 +34,7 @@
 .met-popup-header,.met-popup-footer { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 24px; }
 .met-popup-header { border-bottom: 1px solid var(--line); }
 .met-popup-header h2 { margin: 0; font: var(--weight-semibold) var(--type-h4)/var(--leading-subheading) var(--display); letter-spacing: var(--tracking-subheading); }
-.met-popup .met-close { width: 44px; padding: 0; font-size: 24px; }
+.met-popup .met-close { width: 48px; padding: 0; }
 .met-popup-body { padding: 24px; }
 .met-popup-footer { justify-content: flex-end; border-top: 1px solid var(--line); }
 .beats-popup-grid { display: grid; grid-template-columns: repeat(8,minmax(0,1fr)); gap: 8px; }

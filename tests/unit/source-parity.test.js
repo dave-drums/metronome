@@ -21,10 +21,13 @@ for(const name of ['Vault source','Migrated React']) describe(`${name} shared co
       expect(view.container.querySelectorAll('.beat-circle')).toHaveLength(beats);
     }
     const first=view.container.querySelector('.beat-circle');
-    expect(first.querySelector('path').getAttribute('d')).toBe('M8 18L14 10L20 18');
-    fireEvent.click(first);expect(first.querySelector('path').getAttribute('d')).not.toBe('M8 18L14 10L20 18');
+    const accentPath=first.querySelector('path').getAttribute('d');
+    expect(accentPath).toBeTruthy();
+    if(name==='Migrated React') expect(first.querySelector('[data-icon="chevron-up"]')).toBeTruthy();
+    fireEvent.click(first);expect(first.querySelector('path').getAttribute('d')).not.toBe(accentPath);
+    if(name==='Migrated React') expect(first.querySelector('[data-icon="speaker-off"]')).toBeTruthy();
     fireEvent.click(first);expect(first.querySelector('svg')).toBeNull();fireEvent.click(first);
-    expect(first.querySelector('path').getAttribute('d')).toBe('M8 18L14 10L20 18');
+    expect(first.querySelector('path').getAttribute('d')).toBe(accentPath);
     for(const [i,label]of ['Quarter','Eighth','8th Triplet','16th','Fivelet','16th Triplet','Sevenlet','32nd'].entries()){
       fireEvent.click(view.getByText(/^Subdivision:/));fireEvent.click(view.getByText(label));expect(view.getByText(`Subdivision: ${i+1}`)).toBeTruthy();
     }

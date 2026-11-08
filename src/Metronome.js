@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { bindTempoStepper, TEMPO_STEP } from './tempo-stepper.js';
 import { startPlaybackTimer } from './playback-timer.js';
-import tapIcon from './tap-icon.json';
+import toolIcons from './tool-icons.json';
 
 export default function Metronome({ keyboardTarget = window, assetBase = new URL(import.meta.env.BASE_URL, window.location.origin).href } = {}) {
   const [bpm, setBpm] = useState(120);
@@ -300,12 +300,15 @@ export default function Metronome({ keyboardTarget = window, assetBase = new URL
   }, [popupOpen]);
 
   const h = React.createElement;
+  const icon = (name, extra = {}) => h('svg', { className: 'tool-icon', viewBox: toolIcons[name].viewBox,
+    'data-icon': name, 'aria-hidden': true, focusable: false, ...extra },
+    ...toolIcons[name].nodes.map(([tag, attrs], key) => h(tag, { ...attrs, key })));
   const closePopup = () => { setShowBeatsPopup(false); setShowSubdivisionsPopup(false); };
   const popup = (title, content, footer) => h('div', { className: 'met-popup-backdrop', onClick: closePopup },
     h('section', { className: 'met-popup', role: 'dialog', 'aria-modal': true, 'aria-label': title,
       onClick: e => e.stopPropagation(), onKeyDown: e => { if (e.key === 'Escape') closePopup(); } },
       h('div', { className: 'met-popup-header' }, h('h2', null, title),
-        h('button', { className: 'tool-control met-close', 'aria-label': 'Close', onClick: closePopup, autoFocus: true }, '×')),
+        h('button', { className: 'tool-control met-close', 'aria-label': 'Close', onClick: closePopup, autoFocus: true }, icon('close'))),
       h('div', { className: 'met-popup-body' }, content),
       footer && h('div', { className: 'met-popup-footer' }, footer)));
   const choice = (label, selected, onClick, extra = {}) => h('button', {
@@ -315,11 +318,11 @@ export default function Metronome({ keyboardTarget = window, assetBase = new URL
       h('div', { className: 'bpm-display tool-tempo-display' },
         h('div', { className: 'met-bpm-row' },
           h('button', { className: 'tool-control tool-tempo-step met-step', 'aria-label': 'Decrease tempo by 5 BPM',
-            disabled: trainerActive, ref: minusRef }, '−'),
+            disabled: trainerActive, ref: minusRef }, icon('minus')),
           h('input', { className: 'met-bpm tool-number', type: 'text', inputMode: 'numeric', 'aria-label': 'Tempo in beats per minute',
             disabled: trainerActive, value: bpm, onChange: handleBpmChange, onBlur: handleBpmBlur }),
           h('button', { className: 'tool-control tool-tempo-step met-step', 'aria-label': 'Increase tempo by 5 BPM',
-            disabled: trainerActive, ref: plusRef }, '+')),
+            disabled: trainerActive, ref: plusRef }, icon('plus'))),
         h('input', { className: 'met-slider', type: 'range', 'aria-label': 'Tempo slider', min: '1', max: '300', disabled: trainerActive, value: bpm,
           onChange: e => setBpm(parseInt(e.target.value)) }),
         h('div', { className: 'met-tempo-scale' }, h('span', null, '1'), h('span', null, 'Tempo · BPM'), h('span', null, '300'))),
@@ -336,18 +339,15 @@ export default function Metronome({ keyboardTarget = window, assetBase = new URL
                     const index = row === 0 ? i : Math.ceil(subdivisionType / 2) + i;
                     return h('span', { key: index, className: 'subdivision-dot', 'data-subdivision': index, 'data-current': index <= subdivision });
                   }))))
-              : emphasis === 'mute' ? h('svg', { width: 20, height: 20, viewBox: '0 0 24 24', fill: 'none', 'aria-hidden': true },
-                  h('path', { d: 'M4 9h4l5-5v16l-5-5H4z M17 9l5 6m0-6-5 6', stroke: 'currentColor', strokeWidth: 1.6 }))
-              : emphasis === 'accent' ? h('svg', { width: 28, height: 28, viewBox: '0 0 28 28', fill: 'none', 'aria-hidden': true },
-                  h('path', { d: 'M8 18L14 10L20 18', stroke: 'currentColor', strokeWidth: 2, strokeLinecap: 'round', strokeLinejoin: 'round' })) : null);
+              : emphasis === 'mute' ? icon('speaker-off')
+              : emphasis === 'accent' ? icon('chevron-up') : null);
         }));
       })),
       h('div', { className: 'met-controls' },
         h('button', { className: 'tool-control tool-primary met-play tool-playback', 'aria-label': isPlaying ? 'Stop metronome' : 'Start metronome',
-          'aria-pressed': isPlaying, onClick: togglePlayback }, isPlaying ? `⏹ ${elapsedTime}` : 'Start'),
+          'aria-pressed': isPlaying, onClick: togglePlayback }, icon(isPlaying ? 'stop' : 'play'), h('span', null, isPlaying ? elapsedTime : 'Start')),
         h('button', { className: 'tool-control tool-tap', 'aria-label': 'Tap tempo', disabled: trainerActive, onClick: handleTapTempo },
-          h('svg', { className: 'tool-tap-icon', viewBox: tapIcon.viewBox, 'aria-hidden': true, focusable: false },
-            tapIcon.paths.map((d, key) => h('path', { d, key }))), h('span', null, 'Tap tempo')),
+          icon('tap'), h('span', null, 'Tap tempo')),
         h('button', { className: 'tool-control', disabled: trainerActive, onClick: e => { popupReturnRef.current = e.currentTarget; setShowBeatsPopup(true); } }, `Beats: ${beatsPerBar}`),
         h('button', { className: 'tool-control', disabled: trainerActive, onClick: e => { popupReturnRef.current = e.currentTarget; setShowSubdivisionsPopup(true); } }, `Subdivision: ${subdivisionType}`)),
       h('section', { className: 'tool-trainer met-trainer', 'aria-label': 'Speed trainer' },
