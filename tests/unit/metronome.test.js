@@ -70,7 +70,7 @@ describe('Vault metronome behaviour', () => {
   it('uses the inline trainer, counts complete bars and clamps to a non-divisible target', async () => {
     vi.useFakeTimers(); vi.setSystemTime(10000); const view=await app();
     fireEvent.click(view.getByText(/^Beats:/)); fireEvent.click(view.getByRole('button',{name:'1',exact:true}));
-    fireEvent.click(view.getByRole('checkbox',{name:'Speed trainer'}));
+    fireEvent.click(view.getByRole('checkbox',{name:/^Speed trainer /}));
     for(const [name,value] of [['Starting BPM','120'],['Target BPM','132'],['Increase by','5']]) fireEvent.change(view.getByLabelText(name),{target:{value}});
     const cycle=()=>view.getByLabelText('Repetition in current cycle').textContent;
     expect(cycle()).toBe('Repetition 0 of 4');
@@ -92,7 +92,7 @@ describe('Vault metronome behaviour', () => {
     expect(cycle()).toBe('Repetition 1 of 4'); expect(bpm(view).value).toBe('120');
   });
   it('validates inline trainer settings and keeps editing available after errors', async () => {
-    const view=await app();fireEvent.click(view.getByRole('checkbox',{name:'Speed trainer'}));
+    const view=await app();fireEvent.click(view.getByRole('checkbox',{name:/^Speed trainer /}));
     fireEvent.change(view.getByLabelText('Starting BPM'),{target:{value:'140'}});
     fireEvent.change(view.getByLabelText('Target BPM'),{target:{value:'100'}});
     fireEvent.click(view.getByLabelText('Start metronome'));
@@ -103,7 +103,7 @@ describe('Vault metronome behaviour', () => {
   it('aligns the repetition counter with output latency and cancels pending updates on Stop', async () => {
     vi.useFakeTimers(); vi.setSystemTime(10000); const view=await app();
     MockAudioContext.instances.at(-1).outputLatency=0.08;
-    fireEvent.click(view.getByRole('checkbox',{name:'Speed trainer'}));
+    fireEvent.click(view.getByRole('checkbox',{name:/^Speed trainer /}));
     fireEvent.click(view.getByLabelText('Start metronome'));
     act(()=>vi.advanceTimersByTime(79));
     expect(view.getByLabelText('Repetition in current cycle').textContent).toBe('Repetition 0 of 4');

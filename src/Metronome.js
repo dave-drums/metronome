@@ -354,13 +354,9 @@ export default function Metronome({ keyboardTarget = window, assetBase = new URL
         h('div', { className: 'tool-trainer-heading' },
           h('label', { className: 'tool-trainer-toggle', htmlFor: 'met-trainer-enabled' },
             h('input', { id: 'met-trainer-enabled', type: 'checkbox', checked: trainerEnabled, disabled: isPlaying,
-              onChange: e => { setTrainerEnabled(e.target.checked); setTrainerError(''); } }), h('span', null, 'Speed trainer')),
+              onChange: e => { setTrainerEnabled(e.target.checked); setTrainerError(''); } }), h('span', null, `Speed trainer ${trainerEnabled ? 'active' : 'inactive'}`)),
           h('output', { className: 'tool-trainer-cycle', 'aria-label': 'Repetition in current cycle', 'aria-live': 'off', hidden: !trainerEnabled },
-            `Repetition ${trainerCycle} of ${Math.max(1, Number(trainerInterval) || 1)}`),
-          h('p', { className: 'tool-trainer-status', role: 'status' }, !trainerEnabled ? 'Steady tempo'
-            : isPlaying ? Number(bpm) >= Number(trainerStop) ? 'Target reached · holding tempo'
-              : 'Speed trainer active'
-              : 'Speed trainer ready')),
+            `Repetition ${trainerCycle} of ${Math.max(1, Number(trainerInterval) || 1)}`)),
         h('fieldset', { className: 'tool-trainer-fields', ref: trainerInputsRef, disabled: isPlaying || !trainerEnabled },
           h('legend', { className: 'met-sr-only' }, 'Speed trainer settings'),
           ...[['start','Starting BPM',trainerStart,setTrainerStart,1,300],['target','Target BPM',trainerStop,setTrainerStop,1,300],

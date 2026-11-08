@@ -12,7 +12,7 @@
 .met-tempo-scale { display: grid; grid-template-columns: 1fr auto 1fr; color: var(--muted); font-size: var(--type-caption); }
 .met-tempo-scale > :first-child { text-align: left; }
 .met-tempo-scale > :last-child { text-align: right; }
-.met-beats { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding-block: var(--space-3); margin-top: var(--space-3); border-top: 1px solid var(--line); }
+.met-beats { display: flex; flex-direction: column; align-items: center; gap: var(--space-1); padding-block: var(--space-3); }
 .met-beat-row { display: flex; align-items: center; justify-content: center; gap: clamp(4px,1.2vw,8px); width: 100%; max-width: 440px; }
 .beat-circle { display: inline-flex; flex: 0 1 48px; min-width: 0; align-items: center; justify-content: center; width: 48px; height: auto; aspect-ratio: 1; padding: 0; border: 1px solid var(--line); border-radius: 50%; background: var(--tool-control-fill); box-shadow: var(--tool-control-shadow); color: var(--muted); cursor: pointer; }
 .beat-circle svg { max-width: 100%; }

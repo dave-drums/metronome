@@ -46,14 +46,22 @@ it('traps dialog focus, closes with Escape and restores the invoking control', a
   expect(view.queryByRole('dialog')).toBeNull(); expect(document.activeElement).toBe(trigger);
 });
 
-it('keeps the trainer counter between the checkbox and short status and the desktop controls in order', async () => {
+it('shows trainer state beside the checkbox and the cycle count as the last heading item', async () => {
   const view=render(React.createElement(Metronome));await act(async()=>{});
   const controls=view.container.querySelector('.met-controls');
   expect([...controls.children].map(button=>button.textContent)).toEqual(['Start','Tap tempo','Beats: 4','Subdivision: 1']);
-  fireEvent.click(view.getByRole('checkbox',{name:'Speed trainer'}));
+  const toggle=view.getByRole('checkbox',{name:'Speed trainer inactive'});
+  expect(view.getByLabelText('Repetition in current cycle').hidden).toBe(true);
+  fireEvent.click(toggle);
   const heading=view.container.querySelector('.tool-trainer-heading');
-  expect([...heading.children].map(node=>node.tagName)).toEqual(['LABEL','OUTPUT','P']);
-  expect(heading.querySelector('.tool-trainer-status').textContent).toBe('Speed trainer ready');
+  expect([...heading.children].map(node=>node.tagName)).toEqual(['LABEL','OUTPUT']);
+  expect(toggle.labels[0].textContent).toBe('Speed trainer active');
+  expect(view.getByLabelText('Repetition in current cycle').hidden).toBe(false);
   fireEvent.click(view.getByLabelText('Start metronome'));
-  expect(heading.querySelector('.tool-trainer-status').textContent).toBe('Speed trainer active');
+  expect(toggle.labels[0].textContent).toBe('Speed trainer active');
+  fireEvent.click(view.getByLabelText('Stop metronome'));
+  expect(toggle.labels[0].textContent).toBe('Speed trainer active');
+  fireEvent.click(toggle);
+  expect(toggle.labels[0].textContent).toBe('Speed trainer inactive');
+  expect(view.getByLabelText('Repetition in current cycle').hidden).toBe(true);
 });
